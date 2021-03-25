@@ -21,7 +21,8 @@ export default {
   ],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: ['~/plugins/vAvatar.js'
+  plugins: [
+    '~/plugins/EventBus'
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -37,7 +38,7 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/auth',
     '@nuxtjs/pwa',
-    '@nuxt/content',
+    '@nuxt/content'
   ],
   render: {
   // HTTP2: https://nuxtjs.org/api/configuration-render/#http2
@@ -52,6 +53,11 @@ export default {
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
       proxy: true,
+      credentials: true,
+      proxyHeaders: true,
+      init (axios, ctx) {
+        axios.defaults.xsrfHeaderName = 'X-CSRF-TOKEN'
+      }
   },
   proxy: {
       '/server/': {
@@ -65,6 +71,7 @@ export default {
           callback: '/callback',
           logout: '/signed-out',
           home: false,
+          register: false,
           secure: false,
       },
       strategies: {

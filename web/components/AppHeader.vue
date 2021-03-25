@@ -18,19 +18,22 @@
             <ul class="navbar-nav  navbar-nav-hover ml-lg-auto">
                 <base class="nav-item" menu-classes="dropdown-menu-xl">
                     <a slot="title" href="/listings/add" class="nav-link">
-                        <i class="ni ni-ui-04 d-lg-none"></i>
                         <button type="button" class="btn btn-warning">Add Listing</button>
                     </a>
                    <template v-if="$auth.$state.loggedIn">
-
                 <base-dropdown tag="li" class="nav-item">
                     <a slot="title" class="nav-link" data-toggle="dropdown" role="button">
-                        <i class="ni ni-collection d-lg-none"></i>
+
+                        <i v-if="newmessage" class="newmessage ni ni-active-40"></i>
+                        <fa icon="envelope-open-text"></fa>
                         <vue-letter-avatar :name="$auth.user.username" size='40' :rounded=true />
                     </a>
                     <button class="dropdown-item" @click=$auth.logout()>Logout</button>
                     <router-link :to="'/users/' + $auth.user.username" class="dropdown-item">Profile</router-link>
                 </base-dropdown>
+                    <a v-if="admin" slot="admin" href="/admin" class="nav-link">
+                        <button type="button" class="btn btn-warning">Admin</button>
+                    </a>
                     </template>
                     <template v-else>
                 <base class="nav-item" menu-classes="dropdown-menu-xl">
@@ -60,7 +63,18 @@ import Vue from 'vue';
 Vue.use(VueLetterAvatar);
 
 export default {
-
+  middleware: ['auth'],
+    computed: {
+        state () {
+            return JSON.stringify(this.$auth.$state, undefined, 2)
+        },
+        admin() {
+            return this.$auth.user.admin === true;
+        },
+        newmessage() {
+            return this.$auth.user.new === true;
+        },
+    },
     components: {
         BaseNav,
         CloseButton,
@@ -75,5 +89,15 @@ export default {
 }
 .nav-link {
     line-height: 35px;
+}
+i.newmessage.ni.ni-active-40 {
+    position: absolute;
+    transform: rotate(35deg);
+    top: 39px;
+    right: 25px;
+    background-color: #172b4d;
+    color: #fff;
+    padding: 5px;
+    border-radius: 50%;
 }
 </style>

@@ -1,21 +1,40 @@
 <template>
-  <main class="container mt-6">
-    <div class="row">
-      <div class="col-12 text-right mb-6">
-      </div>
+<main>
+<div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img class="d-block w-100" src="https://downloads.intercomcdn.com/i/o/39270330/291522149778600b9ba16287/sharetribe_cover-picture_blurry-lights.jpg" alt="First slide">
+      <div class="carousel-caption d-none d-md-block">
+    <strong>Welcome to Estuaries</strong>
+    <title>A Marktplace cms</title>
+  </div>
+    </div>
+  </div>
+</div>
+    <div class="container page" >
+    <div class="row" >
+    <div class="col-xs-12 col-md-3">
+          <div class="sidebar">
+            <p>Popular Tags</p>
+
+          </div>
+    </div>
+<b-container class="col-xs-12 col-md-9">
+    <div class="row" >
       <template v-for="listing in listings">
-          <div :key="listing.id" class="col-md-3">
-            <nuxt-link :to="`/listings/${listing.slug}/`">
-              <card card-lift--hover :listing="listing"></card>
-            </nuxt-link>
+          <div :key="listing.id" class="col-md-4">
+              <listing-card :listing="listing"></listing-card>
           </div>
       </template>
     </div>
-  </main>
+</b-container>
+  </div>
+</div>
+</main>
 </template>
 
 <script>
-import ListingCard from "~/components/Card.vue";
+
 export default {
   head() {
     return {
@@ -49,6 +68,20 @@ export default {
 };
 </script>
 
-<style scoped>
-
+<style>
+title {
+    display: block;
+}
+.carousel-caption {
+    position: absolute;
+    right: 15%;
+    bottom: 130px;
+    left: 15%;
+    z-index: 10;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    color: #fff;
+    text-align: center;
+    font-size: 75px;
+}
 </style>

@@ -1,32 +1,43 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
 from .permissions import IsAuthorOrReadOnly
-from .models import Listing, ListingImage
-from .serializers import ListingSerializer
+from .models import Listing
+from categorys.models import Category
+from .serializers import ListingSerializer, ListingDetailSerializer, ListingImageSerializer
+from django.shortcuts import render, get_object_or_404
+from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.shortcuts import render
+
+from rest_framework.permissions import AllowAny
 from django.shortcuts import render, get_object_or_404
 
 
-class ListingListView(generics.ListCreateAPIView):
-    queryset = Listing.objects.all()
-    serializer_class = ListingSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+from categorys.models import Category
 
+
+
+class ListingListView(generics.ListAPIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+    queryset = Listing.objects.all()
+    filter_backends= [SearchFilter, OrderingFilter]
+    serializer_class = ListingSerializer
+    permission_classes = ( )
+
+class ListingCreateView(generics.CreateAPIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+    queryset = Listing.objects.all()
+    serializer_class = ListingDetailSerializer
+    permission_classes = ( )
+    parser_classes = ( MultiPartParser, FormParser)
 
 class ListingDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Listing.objects.all()
-    serializer_class = ListingSerializer
+    serializer_class = ListingDetailSerializer
     permission_classes = (IsAuthorOrReadOnly, )
-    lookup_field = 'slug'
-    lookup_url_kwarg = 'slug'
 
-
-def listingimage_view(request):
-    listing = Listing.objects.all()
-    return render(request, 'listingimage.html', {'listing':listing})
- 
-def listingimagedetail_view(request, id):
+def listing(request, pk, slug):
     listing = get_object_or_404(Listing, id=id)
-    images = ListingImage.objects.filter(listing=listing)
-    return render(request, 'listingimagedetail.html', {
-        'listing':listing,
-        'images':images
-    })
+    if slug != listing.get_slug():
+        return redirect(listing)
+

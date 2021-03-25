@@ -28,7 +28,7 @@
                                             addon-left-icon="ni ni-email-83">
                                 </base-input>
                                 <div class="text-center">
-                                    <base-button type="primary" class="my-4">Sign In</base-button>
+                                    <base-button type="primary" class="my-4" >Confirm</base-button>
                                 </div>
                             </form>
                         </template>

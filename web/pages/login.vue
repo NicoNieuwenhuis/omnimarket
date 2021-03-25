@@ -134,7 +134,7 @@ export default {
                     }
                 })
                 .then(() => {
-                    this.$router.push('/secure')
+                    this.$router.push('/')
                 })
                 .catch((e) => {
                     this.error = e.response.data

@@ -31,7 +31,7 @@
             <label for>Listings Description</label>
             <input type="text" class="form-control" v-model="listings.description">
           </div>
-          <button v-if="editable" type="submit" class="btn btn-primary">Submit</button>
+          <button type="submitedit" class="btn btn-primary">Submit</button>
         </form>
       </div>
   </div>
@@ -94,20 +94,23 @@ export default {
       };
       reader.readAsDataURL(file);
     },
-    async submitedit(){
-      const config = {
-      headers: { "content-type": "multipart/form-data" }
-    };
-    let editlisting = this.listings
+    async submitListings({$axios, params}){
 
-    let formData = new FormData()
-    for(let data in editlisting){
-      formData.append(data, editlisting[data])
-    }
-     try{
-      let response = await this.$axios.$patch(`/server/listings/${editlisting.slug}/`, formData, config)
-      this.$router.push('/')
-    } catch(e){ console.log(e)}
+      this.error = null
+
+      const config = {
+        headers: { "content-type": "multipart/form-data" }
+      };
+      let formData = new FormData();
+      for (let data in this.listings) {
+        formData.append(data, this.listings[data]);
+      }
+      try {
+        let response = await this.$axios.$patch('/server/listings/' + $params.slug + '/', formData, config);
+        this.$router.push("/");
+      } catch (e)  {
+        this.error = e.response.data
+      }
     }
   }
 }

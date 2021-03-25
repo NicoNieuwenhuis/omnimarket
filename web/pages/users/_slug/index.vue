@@ -1,41 +1,57 @@
 <template>
-  <main class="container my-5">
-    <div class="row">
-      <div class="col-12 text-center my-3">
-        <h2 class="mb-3 display-4 text-uppercase">{{ users.username }}</h2>
-      </div>
-      <div class="col-md-6 mb-4">
-      <img
-          class="img-fluid"
-          style="width: 400px; border-radius: 10px; box-shadow: 0 1rem 1rem rgba(0,0,0,.7);"
-          :src="users.profilepic"
-          alt>
-      </div>
-      <div class="col-md-4">
-          <div>
-            <h2>Email</h2>
-            <h2>{{users.email}}</h2>            
-          </div>
-          <div>
-            <h3>member since</h3>
-            <p>{{users.member_since}}</p>
-          </div>
-          <div>
-            <h3>Last login</h3>
-            <p>{{users.last_login}}</p>
-          </div>
-          <div>
-            <h3>About</h3>
-            <p>{{users.about_you}}</p>
-          </div>
-          <nuxt-link :to="`/user/${users.slug}/edit`" >
-          <div v-if="$auth.$state.loggedIn">
-            <button v-if="author" class="btn btn-primary">Edit</button>
-          </div>
-          </nuxt-link>
-      </div>
+    <div class="profile-page">
+        <section class="section-profile-cover section-shaped my-0">
+            <div class="shape shape-style-1 shape-primary alpha-4">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </section>
+        <section class="section section-skew">
+            <div class="container">
+                <card shadow class="card-profile mt--300" no-body>
+                    <div class="px-4">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-3 order-lg-2">
+                                <div class="card-profile-image">
+                                        <img :src="users.profilepic">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 order-lg-3 text-lg-right align-self-lg-center">
+                                <div class="card-profile-actions py-4 mt-lg-0">
+                                              <nuxt-link :to="`/user/${users.slug}/edit`">
+                                                <div v-if="$auth.$state.loggedIn">
+                                                  <base-button v-if="author" type="default" class="float-left">Edit</base-button>
+                                                </div>
+                                              </nuxt-link>
+                                    <base-button type="default" class="float-right">Message</base-button>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 order-lg-1">
+                                <div class="card-profile-stats d-flex justify-content-center">
+                                  <div>
+                                    <h3>member since</h3>
+                                    <p>{{users.member_since}}</p>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-5 py-5 border-top text-center">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-9">
+                                    <p>{{users.about_you}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </card>
+            </div>
+        </section>
     </div>
-  </main>
 </template>
 
 <script>
@@ -46,8 +62,11 @@ export default {
         state () {
             return JSON.stringify(this.$auth.$state, undefined, 2)
         },
+        admin() {
+            return this.users.admin === true;
+        },
         author() {
-            return this.$auth.user.pk == this.users.username;
+            return this.$auth.user.username == this.users.username;
         },
     },
     head(){
@@ -89,5 +108,10 @@ export default {
 </script>
 
 <style>
-
+.section-profile-cover {
+    height: 446px;
+}
+.profile-page .card-profile {
+    margin-top: -300px;
+}
 </style>

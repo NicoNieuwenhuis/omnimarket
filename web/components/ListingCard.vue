@@ -1,9 +1,9 @@
 <template>
   <div class="card listing-card">
-   <nuxt-link :to="`/listings/${listing.slug}/`">
+   <nuxt-link :to="`/listings/${listing.slug}-${listing.id}/`">
     <img :src="listing.image" class="card-img-top">
    </nuxt-link>
-   <nuxt-link :to="`/listings/${listing.slug}/`">
+   <nuxt-link :to="`/listings/${listing.slug}-${listing.id}/`">
     <div class="card-body">
       <h5 class="listing-card-title">{{ listing.name }}</h5>
       <p class="listing-card-price">
@@ -11,12 +11,12 @@
       </p>
     </div>
    </nuxt-link>
-   <nuxt-link :to="`/users/${listing.author_id}/`">
+   <nuxt-link :to="`/users/${listing.author}/`">
     <div class="card-author">
     <row>
-    <vue-letter-avatar :name='listing.author_id' size='40' :rounded=true class="card-a-avatar"/>
+    <vue-letter-avatar :name='listing.author' size='40' :rounded=true class="card-a-avatar"/>
       <a class="card-a-text">
-       {{ listing.author_id }}
+       {{ listing.author }}
       </a>
     </row>
     </div>

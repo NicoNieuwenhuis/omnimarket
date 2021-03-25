@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import datetime
+from datetime import timedelta
+
+import logging
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,7 +29,45 @@ SECRET_KEY = '@tk^5aizcw@q!v=y(0wi93-vgr%d@8tu8bq5mb)x(a@yl5b8+2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['http://127.0.0.1:3000','*']
+
+
+NPLUSONE_LOGGER = logging.getLogger('nplusone')
+NPLUSONE_LOG_LEVEL = logging.WARN
+
+
+#LOGGING = {
+ #   'version': 1,
+#    'handlers': {
+#        'console': {
+#            'class': 'logging.StreamHandler',
+#        },
+#    },
+#    'loggers': {
+#        'nplusone': {
+#            'handlers': ['console'],
+#            'level': 'WARN',
+#        },
+#    },
+#}
+
+#LOGGING = {
+#    'version': 1,
+#    'disable_existing_loggers': False,
+#    'handlers': {
+#        'console': {
+#            'level': 'DEBUG',
+#            'class': 'logging.StreamHandler',
+#        }
+#    },
+#    'loggers': {
+#        'django.db.backends': {
+#            'handlers': ['console'],
+#            'level': 'DEBUG',
+#        },
+#    }
+#}
+
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,25 +80,39 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    #3e
     'django_userforeignkey',
     'corsheaders',
     'django.contrib.sites',
     'rest_framework',
     'rest_framework.authtoken',
-    'rest_auth',
-    'rest_auth.registration',
+    'rest_framework_recursive',
+#    'rest_auth',
+#    'rest_auth.registration',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'easy_thumbnails',
+    'mysql',
+    'debug_toolbar',
+    'nplusone.ext.django',
 
+    #local
+    'messagess',
+    'authrest',
+    'pricetype',
+    'auction',
+    'qena',
+    'comments',
     'users',
     'listings',
     'back',
+    'categorys',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'nplusone.ext.django.NPlusOneMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -68,11 +124,22 @@ MIDDLEWARE = [
     'django_userforeignkey.middleware.UserForeignKeyMiddleware',
 ]
 
+
+INTERNAL_IPS = [
+    # ...
+    '127.0.0.1',
+    # ...
+]
+
+
 CORS_ORIGIN_WHITELIST = ( 
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
     'http://*',
+    'https://*',
     )
+CORS_ALLOW_CREDENTIALS = True
+CSRF_USE_SESIONS = False
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = None
     
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -90,6 +157,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+        'libraries': { # Adding this section should work around the issue.
+            'staticfiles' : 'django.templatetags.static',
+        },
         },
     },
 ]
@@ -102,12 +172,19 @@ WSGI_APPLICATION = 'api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'estuaries1',
+        'USER': 'root',
+        'PASSWORD': '642#Denhaag',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8mb4', 
+        }
     }
 }
 
-
+AUTH_USER_MODEL = 'users.CustomUser'
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
@@ -130,10 +207,16 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': [ 
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication'
-    )
+    ]
+}
+
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=90),
 }
 
 AUTHENTICATION_BACKENDS = (
@@ -156,7 +239,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
 # 4
-ACCOUNT_EMAIL_VARIFICATION = 'mandatory'
+ACCOUNT_EMAIL_VARIFICATION = 'none'
 ACCOUNT_EMAIL_REQUIRED = True
 
 # 5
@@ -172,7 +255,8 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -185,4 +269,4 @@ THUMBNAIL_ALIASES = {
     },
 }
 
-AUTH_USER_MODEL = 'users.CustomUser'
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880

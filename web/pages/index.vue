@@ -12,14 +12,20 @@
   </div>
 </div>
     <div class="container page" >
-    <div class="row" >
-    <div class="col-xs-12 col-md-3">
-          <div class="sidebar">
-            <p>Popular Tags</p>
-
-          </div>
+      <div class="row" >
+      <div class="col-xs-12 col-md-3">
+  <div class="panel panel-default pd-search-filter">
+    <div class="panel-heading">
+      <h3 class="panel-title"><i class="fa fa-circle-o"></i> By Category</h3>
     </div>
-<b-container class="col-xs-12 col-md-9">
+    <div class="panel-body">
+      <ul v-for="list in categories">
+        <ListCategorie v-if="list.parent == null" :node="list"></ListCategorie>
+      </ul>
+    </div>
+  </div>
+  </div>
+    <b-container class="col-xs-12 col-md-9">
     <div class="row" >
       <template v-for="listing in listings">
           <div :key="listing.id" class="col-md-4">
@@ -34,7 +40,6 @@
 </template>
 
 <script>
-import Card from "~/components/Card.vue";
 export default {
   head() {
     return {
@@ -44,14 +49,16 @@ export default {
   async asyncData({ $axios, params }) {
     try {
       let listings = await $axios.$get(`/server/listings/`);
-      return { listings };
+      let categories = await $axios.$get(`/server/categorieslist/`);
+      return { listings, categories };
     } catch (e) {
-      return { listings: [] };
+      return { listings: [], categories: [], };
     }
   },
   data() {
     return {
-      listings: []
+      listings: [],
+      categories: [],
     };
   },
   methods: {

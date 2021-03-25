@@ -1,12 +1,17 @@
 from rest_framework import serializers
-from .models import Theme, Categories
+from .models import Theme
+from django.core.exceptions import ObjectDoesNotExist
 
+from rest_framework import serializers
+
+
+
+       
 class ThemeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Theme
         fields = '__all__'
 
-class CategoriesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Categories
-        fields = '__all__'
+
+
+

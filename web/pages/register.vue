@@ -39,32 +39,30 @@
                             </div>
                             <form role="form">
                                 <base-input alternative
+                                            v-model="username"
                                             class="mb-3"
-                                            placeholder="Name"
+                                            placeholder="Username"
                                             addon-left-icon="ni ni-hat-3">
                                 </base-input>
                                 <base-input alternative
+                                            v-model="email"
                                             class="mb-3"
                                             placeholder="Email"
                                             addon-left-icon="ni ni-email-83">
                                 </base-input>
                                 <base-input alternative
+                                            v-model="password1"
                                             type="password"
                                             placeholder="Password"
                                             addon-left-icon="ni ni-lock-circle-open">
                                 </base-input>
-                                <div class="text-muted font-italic">
-                                    <small>password strength:
-                                        <span class="text-success font-weight-700">strong</span>
-                                    </small>
-                                </div>
                                 <base-checkbox>
                                     <span>I agree with the
                                         <a href="#">Privacy Policy</a>
                                     </span>
                                 </base-checkbox>
                                 <div class="text-center">
-                                    <base-button type="primary" class="my-4">Create account</base-button>
+                                    <base-button type="primary" class="my-4" @click="register">Create account</base-button>
                                 </div>
                             </form>
                         </template>
@@ -74,8 +72,41 @@
         </div>
     </section>
 </template>
+
 <script>
-export default {};
+
+export default {
+  components: {
+  },
+  data() {
+    return {
+      username: '',
+      email: '',
+      password1: '',
+      password2: '',
+      error: null
+    }
+  },
+
+  methods: {
+    async register() {
+      try {
+        await this.$axios.post('/server/rest-auth/registration/', {
+          username: this.username,
+          email: this.email,
+          password1: this.password1,
+          password2: this.password1
+        })
+        this.$router.push('/login')
+      } catch (e) {
+        this.error = e.response.data.detail
+        // eslint-disable-next-line no-console
+        console.log(e.detail)
+      }
+    }
+  }
+}
 </script>
+
 <style>
 </style>
