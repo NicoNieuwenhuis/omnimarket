@@ -18,7 +18,7 @@
           </div>
       </div>
       <div class="col-md-4">
-          <div>
+          <div v-if="this.listings.hasprice === true">
             <h2>Price</h2>
             <h2>{{listings.price}}</h2>            
           </div>

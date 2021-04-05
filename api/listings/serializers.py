@@ -30,6 +30,7 @@ class ListingDetailSerializer(serializers.ModelSerializer):
             category=validated_data.get('category'), 
             pricetype=validated_data.get('pricetype'), 
             firstimage=validated_data.get('firstimage'), 
+            hasprice=validated_data.get('hasprice'),
             )
         for image_data in images_data.getlist('images'):
             ListingImage.objects.create(listing=listing, image=image_data)

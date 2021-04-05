@@ -6,14 +6,17 @@
           <div>
             <div class="form-group">
               <label for>Categories</label>
-              <TreeView :data="categories" @nodeSelect="nodeSelect" :contextMenu="false" :renameNodeOnDblClick="false"></TreeView>
+
+              <ListCategorieAdd :nodes="categories" @nodeSelect="nodeSelect"></ListCategorieAdd>
+              {{listings.category}}
+
             </div>
               <div  v-if="this.listings.category" class="form-group">
                 <label for>Price type</label>
-                <select v-model="listings.pricetype" @change="getPricetype">
+                <select v-model="listings.pricetype"  >
                   <option v-model="listings.pricetype" v-for="pricetype in catpricetype.pricetype"  :value="pricetype">{{pricetype}}</option>
                 </select>
-                <span>Selected: {{ pricetype }}</span>
+                <span>Selected: {{ catpricetype }}</span>
               </div>                        
             <div class="col-md-4" style="float: right;">            
               <div class="form-group">
@@ -32,9 +35,9 @@
                 style="width: 400px; border-radius: 10px; box-shadow: 0 1rem 1rem rgba(0,0,0,.7);"
                 :src="preview" alt>
               <div v-else @click="onButtonClick" style="background-color: #f4f4f4; width: 400px; height: 400px; line-height: 400px; border-radius: 10px; border: 2px solid #d9d9d9; box-shadow: 0 1rem 1rem rgba(0,0,0,.7);">
-                <v-btn >
+                <div>
                   <span class="fa fa-upload fa-3x"></span>
-                </v-btn>
+                </div>
               </div>  
             <div class="form-group">
               <input type="file" ref="uploader" name="image" @change="onFileChange" hidden>
@@ -48,9 +51,9 @@
                   <img class="preview" :src="preview2" style="width: 88px; height: 88px; box-shadow: 0 1rem 1rem rgba(0,0,0,.7);">
                 </div>
                 <div v-else>
-                <v-btn >
+                <div >
                   <span class="fa fa-upload fa-3x"></span>
-                </v-btn>
+                </div>
                 </div>
                 <div>
 
@@ -93,6 +96,7 @@
 
 
 <script>
+import axios from "axios"
 export default {
   head() {
     return {
@@ -135,17 +139,7 @@ export default {
                 ],
       visible: "",
       selectedList: [],
-      pricetype: {
-        name:"",
-        price: true,
-        bid: true,
-        bidoptional: true,
-        payment: true,
-        buybutton: true,
-        buybuttontxt:"",
-        pricetag: true,
-        pricetagtxt:""
-      },
+      pricetype: "loading",
      listings: 
      {
         name: "",
@@ -153,6 +147,7 @@ export default {
         description: "",
         pricetype:"",
         price: "",
+        hasprice: "",
         images:[],
         firstimage: "",
         secondimage: "",
@@ -274,6 +269,7 @@ export default {
       formData.append('pricetype', this.listings.pricetype);
       formData.append('name', this.listings.name);
       formData.append('firstimage', this.listings.firstimage);
+      formData.append('hasprice', this.pricetype.price);
 
         for (let file of this.files) {
             formData.append("images", file, file.name);
@@ -286,30 +282,27 @@ export default {
         this.error = e.response.data
       }
     },
-    async getPricetype ()  {
-       let pricetype = this.$axios.$get("/server/pricetypedetail/" + this.listings.pricetype + "/")
-      console.log(pricetype)
-      return{ pricetype}
-    },
-    nodeSelect(node, isSelected) {
-      console.log('Node ' + node.data.name + ' has been ' + (isSelected ? 'selected' : 'deselected'))
-        if (isSelected) {
-            this.catpricetype = node.data
-            this.listings.category = node.data.id
-        } else if (node.data === this.selectedNode) {
-            this.selected = null
-      }
-    }
-  },
-  mounted() {
-    this.getPricetype();
+    nodeSelect(selected) {
 
+            this.catpricetype = selected
+            this.listings.category = selected
+
+    },
+    getPricetype() {
+      axios.get ("/server/pricetypedetail/" + this.listings.pricetype + "/")
+      .then (response => {
+        this.pricetype = response.data;
+      })
+      .catch (e => {
+        this.errors.push (e)
+      })
+    }
   },
   watch: {
-    listings: function(val) {
-      this.getPricetype()
+    pricetype() {
+      this.$emit('update:pricetype', this.pricetype)
     }
-  }
+  },
 };
 </script>
 

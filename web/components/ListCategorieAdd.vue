@@ -1,36 +1,21 @@
 <template>
+<div>
+<div  v-for="node in nondes">
 
-    <li>
-        <!--parent-->
-        <a :class="{active: list.id === categoryId}" v-if="isFolder" href="javascript:" @click="toggle" v-on:click="setdata(list)">
-          <span class="fa fa-fw" :class="icon"></span>
-            {{list.name}}
-        </a>
-        <!--if not folding, we do not need an binding event-->
-        <a v-else v-on:click="setdata(list)" :title="list.name" :class="{active: list.id === categoryId}" >
-          <span  class="fa fa-fw fa-circle-o"></span>
-            {{list.name}}
-        </a>
-        <!--children-->
-        <ul v-if="isFolder" :class="isShow" >
-            <list v-on:click="setdata(list)" v-for="list in list.children" :list="list" :category="categoryId"></list>
-        </ul>
-    </li>
+{{node.name}}
+</div>
+</div>
 </template>
 
 <script>
 export default {
-  name: "list",
-  props: ['list', 'category', 'selected'],
+  name: "node",
+  props: ['node', 'nodes'],
   data() {
     return {
       open: false,
-      categoryId: this.category
+      selected: []
     }
-  },
-  mounted() {
-    let isNodeOpen = (d) => d.id === this.categoryId || d.children && d.children.some(isNodeOpen);
-    this.open = isNodeOpen(this.list);
   },
   computed: {
     icon() {
@@ -40,22 +25,35 @@ export default {
       }
     },
     isFolder() {
-      return this.list.children && this.list.children.length
+      return this.node.children && this.node.children.length
     },
     isShow() {
       return this.open ? 'show' : 'hide'
+    },
+    setSelected: function() {
+      if (this.selected.length > 0 && this.selected[0].id == this.node.id)
+        return true;
+      else
+        return false;
     }
   },
   methods: {
-      setdata: function(list) {
-            this.$emit('clicked', list.id)
-        },
     toggle() {
       this.open = !this.open
     },
-    filterByCategory(id) {
-      this.categoryId = id
-    }
+    selectNode (node) {
+      this.selected = [];
+      this.selected.push({
+        'id': this.node.id,
+        'pricetype': this.node.pricetype,
+      });
+      this.$emit('nodeSelect', node)
+    },
+    nodeSelect(selected) {
+
+      this.$emit('nodeSelect', node)
+
+    },
   }
 };
 </script>
@@ -72,11 +70,11 @@ export default {
 }
 
 .pd-search-filter > .panel-body ul.filter-category > li a {
-    display: inline-table;
-    padding: 10px 15px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  display: block;
+  padding: 10px 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .pd-search-filter > .panel-body ul.filter-category > li a:last-child {

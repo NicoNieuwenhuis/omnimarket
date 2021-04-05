@@ -6,7 +6,5 @@ class Pricetype(models.Model):
     bid = models.BooleanField(blank=True, default=False,  )
     bidoptional = models.BooleanField(blank=True, default=False,  )
     payment = models.BooleanField(blank=True, default=False,  )
-    buybutton = models.BooleanField(blank=True, default=False,  )
     buybuttontxt = models.TextField(blank=True, null=True)
-    pricetag = models.BooleanField(blank=True, default=False,  )
     pricetagtxt = models.TextField(blank=True, null=True)

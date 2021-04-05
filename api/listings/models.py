@@ -16,11 +16,13 @@ class Listing(auto_prefetch.Model):
     # pricetype choises
     pricetype = auto_prefetch.ForeignKey(Pricetype, null=True, on_delete=models.CASCADE)
     pricetext = models.CharField(max_length=100, blank=True, null=True )
-    price = models.DecimalField(max_digits=6, decimal_places=2, null=True, default=0.00, blank=True)
+    buybuttontxt = models.TextField(blank=True, null=True)
+    hasprice = models.BooleanField(blank=True, default=False,  )
     payment = models.BooleanField(blank=True, default=False,  )
     bid = models.BooleanField(blank=True, default=False,  )
     # Listing description
     name = models.CharField(max_length=100, validators=[alphanumeric])
+    price = models.DecimalField(max_digits=6, decimal_places=2, null=True, default=0.00, blank=True)
     firstimage = models.FileField(blank=True,)
     secondimage = models.FileField(blank=True,)
     description = models.TextField(blank=True, null=True)
