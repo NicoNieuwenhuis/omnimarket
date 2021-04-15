@@ -175,7 +175,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'estuaries1',
         'USER': 'root',
-        'PASSWORD': '642#Denhaag',
+        'PASSWORD': 'xxxxx',
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {
