@@ -1,1 +1,1 @@
-Omnimerket a platform/ marktplace cms system based on vue and django
+Omnimarket a platform/ marktplace cms system based on vue and django
